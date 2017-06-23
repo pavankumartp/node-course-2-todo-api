@@ -34,6 +34,16 @@ app.post('/user', (req,res)=>{
    })
 });
 
+app.get('/user', (req,res)=>{
+  User.find().then((users)=>{
+    debugger;
+    res.send({users})
+  },
+   (e)=>{
+     res.send(e).status(400)
+   })
+})
+
 // app.get('/user', (req,res)=>{
 //   debugger;
 //   res.send('great');
