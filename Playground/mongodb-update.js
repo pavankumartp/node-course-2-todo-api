@@ -8,7 +8,7 @@ MongoClient.connect('mongodb://localhost:27017/TodoApp', (err, db)=>{
   console.log('Connected to MongoDB server');
   db.collection('Users').findOneAndUpdate(
     {_id: new ObjectID('593becaf36c096369083dbff')},
-    {$set:{name: 'Pavan_updated', sex: 'Male' },
+    {$set:{name: 'Pavan_updated', sex: 'Malest' },
      $inc:{age:1}},
      {returnOriginal: false}
 ).then((res)=>{
