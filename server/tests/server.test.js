@@ -4,9 +4,24 @@ const expect = require('expect');
 var {app} = require('./../server');
 var {User} = require('./../models/user');
 
+var users = [
+  {
+    name: 'Pavan1',
+    email: 'pavan.kumar@sap.com',
+    age: 40,
+    location: 'Bengaluru'
+  },
+  {
+    name: 'Pavan2',
+    email: 'pavan.kumar@sap.com',
+    age: 40,
+    location: 'Bengaluru'
+  }
+ ]
+
 beforeEach((done)=>{
   console.log('user deleted')
-  User.remove({}).then(()=>done());
+  User.remove({}).then(()=>User.insertMany(users).then(()=>done()));
 })
 
 describe('POST User',()=>{
@@ -26,7 +41,7 @@ describe('POST User',()=>{
     if(err) return done(err);
 //    done();
 
-    User.find().then((users)=>{
+    User.find({name:'Pavan'}).then((users)=>{
       expect(users.length).toBe(1);
       expect(users[0].name).toBe('Pavan');
       console.log('successful verification');
@@ -50,12 +65,22 @@ it('Should not create user', (done)=>{
 //    done();
 
     User.find().then((users)=>{
-      expect(users.length).toBe(0);
+      expect(users.length).toBe(2);
       console.log('successful verification');
       done();
     }).catch((e)=>done(e));
   })
 
 })
+
+})
+
+describe('GET User data',()=>{
+  it('should get all Users',(done)=>{
+    request(app).get('/user').expect(200)
+    .expect((res)=>{
+      expect(res.body.users.length).toBe(2)
+    }).end(done);
+  })
 
 })
