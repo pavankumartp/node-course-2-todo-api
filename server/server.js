@@ -51,7 +51,7 @@ app.get('/user/:id', (req,res)=>{
 var id = req.params.id;
 if(!ObjectID.isValid(id)) return res.status(404).send();
 
-User.findById(id).then((doc)=>{if(!doc)return res.status(404).send();
+User.findById(id).then((doc)=>{if(!doc) return res.status(404).send();
           res.status(200).send({doc})},
   (err)=>{
   return res.status(400).send();
