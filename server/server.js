@@ -15,7 +15,7 @@ var {User} = require('./models/user.js');
 var {ObjectID} = require('mongodb');
 
 var app = express();
-const port = env.process.PORT||2500;
+const port = process.env.PORT||2500;
 
 app.use(bodyParser.json());
 
