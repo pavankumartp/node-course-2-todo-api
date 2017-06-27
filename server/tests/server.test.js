@@ -103,7 +103,7 @@ describe('GET User data with /user/:id', ()=>{
     request(app).get(path)
     .expect(404).end(done);
   })
-  
+
   it('should not get any record if id is invaid', (done)=>{
     var path = `/user/123`;
     request(app).get(path)
