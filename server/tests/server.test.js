@@ -110,3 +110,25 @@ describe('GET User data with /user/:id', ()=>{
     .expect(404).end(done);
   })
 })
+
+describe('DELETE user data with /user/:id', ()=>{
+  it('should remove a user', (done)=>{
+    var path = `/user/${users[0]._id.toString()}`;
+    request(app).delete(path)
+    .expect(200)
+    .expect((res)=>{
+     expect(res.body.doc.name).toBe(users[0].name);
+    })
+ .end((err,res)=>{
+       if(err) return done(err);
+       User.findById(res.body.doc.toString()).then((user)=>{
+         expect(user).toNotExist();
+
+       })
+       done();
+
+     })
+  })
+
+
+})
