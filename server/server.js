@@ -8,7 +8,7 @@
 
 var express = require('express');
 var bodyParser = require('body-parser');
-
+var _ = require('lodash');
 
 var {mongoose} = require('./db/mongoose');
 var {User} = require('./models/user.js');
@@ -70,6 +70,20 @@ app.post('/user', (req,res)=>{
           return res.status(400).send();
         });
       })
+
+  app.patch('/user/:id', (req, res)=>{
+    var id = req.params.id;
+    if(!ObjectID.isValid(id)) return res.status(404).send();
+
+    var body = _.pick(req.body, ['name', 'location']);
+    User.findByIdAndUpdate(id, {$set:body}, {new: true}).then((doc)=>{
+      if(!doc){return res.status(404).send()}
+        res.send({doc})
+    }).catch((e)=>{
+      res.status(404).send()
+    })
+
+  })
 
 
     app.listen(port,()=>{
