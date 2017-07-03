@@ -5,6 +5,7 @@
 // mongoose.Promise = global.Promise;
 //
 // mongoose.connect('mongodb://localhost:27017/users');
+require('./config/config.js');
 
 var express = require('express');
 var bodyParser = require('body-parser');
@@ -15,7 +16,7 @@ var {User} = require('./models/user.js');
 var {ObjectID} = require('mongodb');
 
 var app = express();
-const port = process.env.PORT||2500;
+const port = process.env.PORT;
 
 app.use(bodyParser.json());
 
