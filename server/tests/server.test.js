@@ -132,3 +132,21 @@ describe('DELETE user data with /user/:id', ()=>{
 
 
 })
+
+describe('PATCH user data with /user/:id', ()=>{
+  it('should update name and location', (done)=>{
+    var path = `/user/${users[0]._id.toString()}`;
+    var u1 = {
+      name: 'PavanPatch',
+      email: 'pavan.kumar@sap.com',
+      age: 40,
+      location: 'PatchBengaluru'
+    };
+    request(app).patch(path).send(u1)
+    .expect(200)
+    .expect((res)=>{
+      expect(res.body.doc.name).toBe(u1.name);
+      done();
+    }).end();
+  })
+})
