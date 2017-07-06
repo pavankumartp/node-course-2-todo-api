@@ -21,70 +21,62 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 
 app.post('/user', (req,res)=>{
-  debugger;
-  var user = new User({
-    name: req.body.name,
-    email: req.body.email,
-    age: req.body.age,
-    location:req.body.location
-  });
+  var body = _.pick(req.body, ['email', 'password', 'tokens']);
+  User.create(body).then((user)=>{
+     user.generateAuthToken().then((token)=>{
+       res.header({'x-token': token}).status(200).send(user)
+     },
+     (e)=>{
+       res.status(500).send(e)
+     })
+  }).catch((e)=>res.status(500).send(e.message));
+});
 
-  debugger;
+app.get('/user', (req,res)=>{
+  User.find().then((users)=>{
+    debugger;
+    res.send({users})
+  },
+  (e)=>{
+    res.send(e).status(400)
+  })
+})
 
-  user.save().then(
-    (doc)=>{
-      res.send(doc)
-    },
-    (e)=>{
-      res.status(400).send(e);
-    })
-  });
+app.get('/user/:id', (req,res)=>{
+  var id = req.params.id;
+  if(!ObjectID.isValid(id)) return res.status(404).send();
 
-  app.get('/user', (req,res)=>{
-    User.find().then((users)=>{
-      debugger;
-      res.send({users})
-    },
-    (e)=>{
-      res.send(e).status(400)
-    })
+  User.findById(id).then((doc)=>{if(!doc) return res.status(404).send();
+    res.status(200).send({doc})},
+    (err)=>{
+      return res.status(400).send();
+    });
   })
 
-  app.get('/user/:id', (req,res)=>{
+  app.delete('/user/:id', (req,res)=>{
     var id = req.params.id;
     if(!ObjectID.isValid(id)) return res.status(404).send();
 
-    User.findById(id).then((doc)=>{if(!doc) return res.status(404).send();
+    User.findByIdAndRemove(id).then((doc)=>{if(!doc) return res.status(404).send();
       res.status(200).send({doc})},
       (err)=>{
         return res.status(400).send();
       });
     })
 
-    app.delete('/user/:id', (req,res)=>{
+    app.patch('/user/:id', (req, res)=>{
       var id = req.params.id;
       if(!ObjectID.isValid(id)) return res.status(404).send();
 
-      User.findByIdAndRemove(id).then((doc)=>{if(!doc) return res.status(404).send();
-        res.status(200).send({doc})},
-        (err)=>{
-          return res.status(400).send();
-        });
+      var body = _.pick(req.body, ['name', 'location']);
+      User.findByIdAndUpdate(id, {$set:body}, {new: true}).then((doc)=>{
+        if(!doc){return res.status(404).send()}
+        res.send({doc})
+      }).catch((e)=>{
+        res.status(404).send()
       })
 
-  app.patch('/user/:id', (req, res)=>{
-    var id = req.params.id;
-    if(!ObjectID.isValid(id)) return res.status(404).send();
-
-    var body = _.pick(req.body, ['name', 'location']);
-    User.findByIdAndUpdate(id, {$set:body}, {new: true}).then((doc)=>{
-      if(!doc){return res.status(404).send()}
-        res.send({doc})
-    }).catch((e)=>{
-      res.status(404).send()
     })
-
-  })
 
 
     app.listen(port,()=>{

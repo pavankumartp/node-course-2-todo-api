@@ -1,13 +1,38 @@
-var _ = require('lodash');
+var mongoose = require('mongoose');
+mongoose.Promise = global.Promise;
 
-var user =
+
+var Breakfast = mongoose.model('breakfast',
 {
-  _id: 'abc',
-  name: 'Pavan1',
-  email: 'pavan.kumar@sap.com',
-  age: 40,
-  location: 'Bengaluru'
-};
+      eggs: {
+        type: Number,
+        min: [6, 'Too few eggs'],
+        max: 12,
+        validate:{
+          validator: (v)=>{
+            return v  > 6
+          }
+        }
+      },
+      bacon: {
+        type: Number,
+        required: [true, 'Why no bacon?']
+      },
+      drink: {
+        type: String,
+        enum: ['Coffee', 'Tea'],
+        required: function() {
+          return this.bacon > 3;
+        }
+      }
+    }
+)
 
-var body = _.pick(user, ['name',  'location']);
-console.log(body);
+    var badBreakfast = new Breakfast({
+      eggs: 7,
+      bacon: 3,
+      drink: 'Tea'
+    });
+
+   var error = badBreakfast.validateSync();
+   console.log(error.errors);
