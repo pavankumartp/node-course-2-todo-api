@@ -4,8 +4,8 @@ const jwt = require('jsonwebtoken');
 var data = {
   name: 'PavanKumar'
 };
-
-var token = jwt.sign({data, exp: Math.floor(Date.now() / 1000) + (0.000001)}, "namesecret");
+debugger;
+var token = jwt.sign({id: 'pavan', exp: Math.floor(Date.now() / 1000) + (60 * 60)}, "namesecret");
 
 console.log(token);
 

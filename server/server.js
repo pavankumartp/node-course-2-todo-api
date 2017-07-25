@@ -14,10 +14,11 @@ var _ = require('lodash');
 var {mongoose} = require('./db/mongoose');
 var {User} = require('./models/user.js');
 var {ObjectID} = require('mongodb');
+var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT;
-
+debugger;
 app.use(bodyParser.json());
 
 app.post('/user', (req,res)=>{
@@ -73,10 +74,17 @@ app.get('/user/:id', (req,res)=>{
         if(!doc){return res.status(404).send()}
         res.send({doc})
       }).catch((e)=>{
-        res.status(404).send()
+        res.status(404).send();
       })
 
     })
+
+    app.get('/users/me', authenticate, (req,res)=>{
+      debugger;
+     res.send(req.user);
+    })
+
+
 
 
     app.listen(port,()=>{
