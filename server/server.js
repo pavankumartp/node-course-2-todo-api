@@ -18,24 +18,20 @@ var {authenticate} = require('./middleware/authenticate');
 
 var app = express();
 const port = process.env.PORT;
-debugger;
 app.use(bodyParser.json());
 
 app.post('/user', (req,res)=>{
   var body = _.pick(req.body, ['email', 'password', 'tokens']);
   User.create(body).then((user)=>{
-     user.generateAuthToken().then((token)=>{
+      user.generateAuthToken().then((token)=>{
        res.header({'x-token': token}).status(200).send(user)
-     },
-     (e)=>{
-       res.status(500).send(e)
+         debugger;
      })
   }).catch((e)=>res.status(500).send(e.message));
 });
 
 app.get('/user', (req,res)=>{
   User.find().then((users)=>{
-    debugger;
     res.send({users})
   },
   (e)=>{
@@ -80,7 +76,6 @@ app.get('/user/:id', (req,res)=>{
     })
 
     app.get('/users/me', authenticate, (req,res)=>{
-      debugger;
      res.send(req.user);
     })
 

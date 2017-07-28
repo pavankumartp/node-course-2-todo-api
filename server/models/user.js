@@ -2,6 +2,8 @@ var mongoose = require('mongoose');
 var validator = require('validator');
 var jwt = require('jsonwebtoken');
 var _ = require('lodash');
+var bcrypt = require('bcryptjs');
+
 
 var Schema = mongoose.Schema;
 
@@ -73,6 +75,24 @@ return User.findOne({
 })
 
 }
+
+UserSchema.pre('save',function(next){
+   debugger;
+   var user = this;
+   if (user.isModified('password')){
+      bcrypt.genSalt(10).then((salt)=>{
+      bcrypt.hash(user.password,salt).then((hash)=>{
+      user.password = hash;
+      debugger;
+      next();
+     })
+   }).catch((e)=>{
+     next(e);
+   })
+   }
+   next();
+  })
+;
 
 var User = mongoose.model('User', UserSchema );
 module.exports = {User};
