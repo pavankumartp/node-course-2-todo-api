@@ -22,7 +22,8 @@ app.use(bodyParser.json());
 
 app.post('/user', (req,res)=>{
   var body = _.pick(req.body, ['email', 'password', 'tokens']);
-  User.create(body).then((user)=>{
+  User.create(body)
+  .then((user)=>{
       user.generateAuthToken().then((token)=>{
        res.header({'x-token': token}).status(200).send(user)
          debugger;

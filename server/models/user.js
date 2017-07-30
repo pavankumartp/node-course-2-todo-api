@@ -67,7 +67,7 @@ UserSchema.statics.findByToken = function(token){
 }catch(e){
   return Promise.reject('Un-authorized');
 }
-
+debugger;
 return User.findOne({
   '_id': decoded.id,
   'tokens.token': token,
@@ -90,9 +90,11 @@ UserSchema.pre('save',function(next){
      next(e);
    })
    }
-   next();
-  })
-;
+//   else {
+   debugger;
+   next() //};
+ });
+
 
 var User = mongoose.model('User', UserSchema );
 module.exports = {User};
