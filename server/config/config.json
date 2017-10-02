@@ -1,0 +1,10 @@
+{
+  "test": {
+    "PORT":2500,
+    "MONGODB_URI": "mongodb://localhost:27017/users_test"
+  },
+  "development": {
+    "PORT":2500,
+    "MONGODB_URI" : "mongodb://localhost:27017/users"
+  }
+}

@@ -63,49 +63,66 @@ UserSchema.statics.findByToken = function(token){
   var User = this;
 
   try{
-  var decoded = jwt.verify(token, "secret");
-}catch(e){
-  return Promise.reject('Un-authorized');
+    var decoded = jwt.verify(token, "secret");
+  }catch(e){
+    return Promise.reject('Un-authorized');
+  }
+  debugger;
+  return User.findOne({
+    '_id': decoded.id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  })
 }
-debugger;
-return User.findOne({
-  '_id': decoded.id,
-  'tokens.token': token,
-  'tokens.access': 'auth'
-})
 
-}
+UserSchema.statics.findByCredentials = function(email, password){
+  return User.findOne({email}).then((user)=>{
+    if(!user) {return Promise.reject()}
 
-UserSchema.pre('save',function(next){
-   debugger;
-   var user = this;
-   if (user.isModified('password')){
-      bcrypt.genSalt(10).then((salt)=>{
-      bcrypt.hash(user.password,salt).then((hash)=>{
-      user.password = hash;
+  return new Promise((resolve, reject)=>{
+    bcrypt.compare(password, user.password).then((result)=>{
       debugger;
-      next();
-     })
-   }).catch((e)=>{
-     next(e);
-   })
-   }
-//   else {
-   debugger;
-   next() //};
- });
+        debugger;
+        if(result){
+          resolve(user)}
+          else{
+            reject();
+          }
+        })
+      })
+    })
+  }
+
+  UserSchema.pre('save',function(next){
+    debugger;
+    var user = this;
+    if (user.isModified('password')){
+      bcrypt.genSalt(10).then((salt)=>{
+        bcrypt.hash(user.password,salt).then((hash)=>{
+          user.password = hash;
+          debugger;
+          next();
+        })
+      }).catch((e)=>{
+        next(e);
+      })
+    }
+    else {
+      debugger;
+      next() };
+    });
 
 
-var User = mongoose.model('User', UserSchema );
-module.exports = {User};
+    var User = mongoose.model('User', UserSchema );
+    module.exports = {User};
 
-// var newUser = new user({
-//   name: 'Pavan', age: 40, email: ' pavan.kumar@sap.com ', location: 'Bengaluru', changedOn: '20170613'
-// });
-//
-// newUser.save().then((doc)=>{
-//   console.log(doc)
-// },
-// (e)=>{
-//   console.log(e)
-// });
+    // var newUser = new user({
+    //   name: 'Pavan', age: 40, email: ' pavan.kumar@sap.com ', location: 'Bengaluru', changedOn: '20170613'
+    // });
+    //
+    // newUser.save().then((doc)=>{
+    //   console.log(doc)
+    // },
+    // (e)=>{
+    //   console.log(e)
+    // });
