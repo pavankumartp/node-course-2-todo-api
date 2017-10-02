@@ -49,7 +49,7 @@ UserSchema.methods.toJSON = function(){
 UserSchema.methods.generateAuthToken = function(){
   var user = this;
   var access = 'auth';
-  var token = jwt.sign({id:user._id.toString(), access}, "secret"); //ES6 syntax for access:access
+  var token = jwt.sign({id:user._id.toString(), access}, process.env.JWT_SECRET); //ES6 syntax for access:access
   debugger;
 
   user.tokens.push({access, token});  //ES6 syntax for {access:access, token:token}
@@ -63,7 +63,7 @@ UserSchema.statics.findByToken = function(token){
   var User = this;
 
   try{
-    var decoded = jwt.verify(token, "secret");
+    var decoded = jwt.verify(token, process.env.JWT_SECRET);
   }catch(e){
     return Promise.reject('Un-authorized');
   }

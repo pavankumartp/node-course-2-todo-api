@@ -1,10 +1,12 @@
 {
   "test": {
     "PORT":2500,
-    "MONGODB_URI": "mongodb://localhost:27017/users_test"
+    "MONGODB_URI": "mongodb://localhost:27017/users_test",
+    "JWT_SECRET": "abc12345def"
   },
   "development": {
     "PORT":2500,
-    "MONGODB_URI" : "mongodb://localhost:27017/users"
+    "MONGODB_URI" : "mongodb://localhost:27017/users",
+    "JWT_SECRET": "def12345abc"
   }
 }
